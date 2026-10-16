@@ -92,8 +92,10 @@ internal fun TopBar(
       // Left half. Equal weight to the right half, so [centre] sits on the real midpoint of the screen
       // rather than the midpoint of whatever space the title happened to leave over.
       Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-        CircleButton(OwnTVIcon.BACK, size = 40, onClick = onBack)
-        Spacer(Modifier.width(14.dp))
+        if (!isLive) {
+            CircleButton(OwnTVIcon.BACK, size = 40, onClick = onBack)
+            Spacer(Modifier.width(14.dp))
+        }
         // Live: the channel logo sits with the channel NAME (identity), not with the programme — so the
         // whole "which channel am I on" group reads as one unit however wide the TV is.
         if (isLive) {
@@ -297,9 +299,8 @@ internal fun CenterControls(
             Spacer(Modifier.height(12.dp))
         }
         TransportCapsule {
-            if (nav.hasPrev) CircleButton(OwnTVIcon.SKIP_PREVIOUS, size = 44) { player.previous() }
+            if (!isLive && nav.hasPrev) CircleButton(OwnTVIcon.SKIP_PREVIOUS, size = 44) { player.previous() }
             when {
-                rewindMode -> CircleButton(OwnTVIcon.REWIND, size = 44) { onRewindLive() } // step back into the archive
                 !isLive -> CircleButton(OwnTVIcon.REWIND, size = 44) { player.seekBy(-seekStep) }
             }
             CircleButton(if (isPlaying) OwnTVIcon.PAUSE else OwnTVIcon.PLAY, size = 64, primary = true, modifier = Modifier.focusRequester(playFocus)) { player.togglePlayPause() }
@@ -309,7 +310,7 @@ internal fun CenterControls(
             }
             // "Go to live" is no longer a transport button: it is the Go Live pill at the head of the
             // dock's left cluster, beside the timeline it acts on.
-            if (nav.hasNext) CircleButton(OwnTVIcon.SKIP_NEXT, size = 44) { player.next() }
+            if (!isLive && nav.hasNext) CircleButton(OwnTVIcon.SKIP_NEXT, size = 44) { player.next() }
         }
     }
 }
