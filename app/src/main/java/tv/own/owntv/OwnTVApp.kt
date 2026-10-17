@@ -180,9 +180,9 @@ class OwnTVApp : Application(), SingletonImageLoader.Factory, androidx.work.Conf
                     .maxSizeBytes(imageDiskCacheBytes())
                     .build()
             }
-            // Opaque poster art doesn't need an alpha channel; RGB_565 halves bitmap memory
-            // under the deliberately small memory cap.
-            .allowRgb565(true)
+            // Keep RGB_565 off globally so channel logos and PNGs with alpha channels
+            // retain true transparency instead of decoding transparent pixels as black.
+            .allowRgb565(false)
             .crossfade(true)
             .build()
     }
